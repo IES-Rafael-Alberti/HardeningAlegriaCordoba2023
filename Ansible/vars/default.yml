@@ -1,0 +1,14 @@
+---
+#System Settings
+php_modules: [ 'php-curl', 'php-gd', 'php-mbstring', 'php-xml', 'php-xmlrpc', 'php-soap', 'php-intl', 'php-zip' ]
+
+#MySQL Settings
+mysql_root_password: "admin1234"
+mysql_db: "wordpress"
+mysql_user: "Subiela"
+mysql_password: "ElCarli"
+
+#HTTP Settings
+http_host: "Elhijodelaalegria"
+http_conf: "elhijodelaalegria.conf"
+http_port: "80"

@@ -1,0 +1,47 @@
+- name: Configurando VSFTPD y Creación Usuario
+  hosts: webserver
+  become: true
+  vars:
+    username: pacoalba
+    password: hannahmontana
+    home_dir: /home/pacoalba
+
+  tasks:
+    - name: Creando directorio de inicio del usuario
+      file:
+        path: "{{ home_dir }}"
+        state: directory
+        owner: "{{ username }}"
+        group: "{{ username }}"
+        mode: 0755
+
+    - name: Creando a Paco Alba
+      user:
+        name: "{{ username }}"
+        password: "{{ password | password_hash('sha512') }}"
+        createhome: no
+        home: "{{ home_dir }}"
+        shell: /bin/bash
+        comment: "Usuario creado"
+
+    - name: Instalando VSFTPD
+      apt: name=vsftpd update_cache=yes state=latest force_apt_get=yes
+      tags: [ system ]
+    - name: Configurando VSFTPD
+      template:
+        src: "files/vsftpd.conf"
+        dest: "/etc/vsftpd.conf"
+      notify: Reload VSFTPD
+      tags: [ ftp ]
+
+  handlers:
+    - name: Reload VSFTPD
+      service:
+        name: vsftpd
+        state: reloaded
+
+    - name: Restart VSFTPD
+      service:
+        name: vsftpd
+        state: restarted
+

@@ -1,0 +1,22 @@
+- name: Configurando SSH
+  hosts: webserver
+  become: true
+  tasks:
+    - name: Configurando SSH
+      template:
+        src: "files/sshd_config"
+        dest: "/etc/sshd_config"
+      notify: Reload SSH
+      tags: [ ftp ]
+
+  handlers:
+    - name: Reload SSH
+      service:
+        name: sshd
+        state: reloaded
+
+    - name: Restart SSH
+      service:
+        name: sshd
+        state: restarted
+
