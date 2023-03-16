@@ -1,6 +1,8 @@
 # Ansible
 
 ![Fotito_Shula_Ansible](https://user-images.githubusercontent.com/114920834/225441956-9b21e975-d524-4fa5-8d83-bfd736231179.png)
+https://discord.com/channels/@me/1030411869724344321/1085889448199336056
+
 
 # Proceso de Instalación Ansible
 
