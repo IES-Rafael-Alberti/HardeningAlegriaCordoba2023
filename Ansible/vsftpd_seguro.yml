@@ -16,15 +16,11 @@
       file:
         path: "{{ home_dir }}"
         state: directory
-        owner: "{{ username }}"
-        group: "{{ username }}"
-        mode: 0755
 
-    - name: Creando a Paco Alba
+    - name: Creando a "{{ username }}"
       user:
         name: "{{ username }}"
         password: "{{ password | password_hash('sha512') }}"
-        createhome: no
         home: "{{ home_dir }}"
         shell: /bin/bash
         comment: "Usuario creado"
@@ -43,31 +39,33 @@
 
     - name: Configurando VSFTPD
       copy:
-       src: "./vsftpd_backup.conf"
+       src: "/etc/ansible/playbooks/files/vsftpd_backup.conf"
        dest: "/etc/vsftpd.conf"
+#      command: mv -f /etc/vsftpd_backup.conf /etc/vsftpd.conf
       notify: Reload VSFTPD
       tags: [ ftp ]
 
-# Securización FTP: creamos el directorio raíz en el que va a iniciar sesión pacoalba
+# Securización FTP: creamos el directorio raíz en el que va a iniciar sesión el usuario del FTP
 
     - name: Creacion directorio FTP y cambio de permisos
       file:
         path: /opt/shared
         state: directory
-        owner: pacoalba
-        group: pacoalba
+        owner: "{{ username }}"
+        group: "{{ username }}"
         mode: '0755'
 
-# Securización FTP: añadimos el usuario pacoalba a la lista de usuarios
+# Securización FTP: creamos la lista de usuarios que serán enjaulados y añadimos el usuario designado a dicha lista
+    - name: Crear archivo /etc/vsftpd.userlist si no existe
+      file:
+        path: /etc/vsftpd.userlist
+        state: touch
 
-    - name: Agregar a pacoalba al archivo /etc/vsftpd.userlist
+    - name: Agregar a "{{ username }}" al archivo /etc/vsftpd.userlist
       lineinfile:
         path: /etc/vsftpd.userlist
         line: 'pacoalba'
         state: present
-
-# Se podría afinar más creando un grupo de usuarios para FTP (ej: alegriagroup) y
-# de manera más genérica agregar a este grupo los usuarios que tengan acceso al FTP conforme se vayan creando
 
   handlers:
     - name: Reload VSFTPD
